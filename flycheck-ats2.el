@@ -79,7 +79,24 @@
     space "--" space (1+ num)
     ;; line, column; end of error span
     "(line=" (1+ num) ?, space "offs=" (1+ num) "):"
-    space
+    space "error"
+    ;; error message; up to three lines long
+    (message
+     (+? not-newline)
+     (or (: ?: ?\n (repeat 2 (: (1+ not-newline) ?\n)))
+         ?\n)))
+   (warning
+    ;; file name
+    bol (file-name)
+    ;; offset of error start
+    ?: space (1+ num)
+    ;; line, column; start of error span
+    "(line=" line ?, space "offs=" column ?\)
+    ;; offset of error end
+    space "--" space (1+ num)
+    ;; line, column; end of error span
+    "(line=" (1+ num) ?, space "offs=" (1+ num) "):"
+    space "warning"
     ;; error message; up to three lines long
     (message
      (+? not-newline)
@@ -95,5 +112,5 @@ Add `ats2' to `flycheck-checkers'."
   (interactive)
   (add-to-list 'flycheck-checkers 'ats2))
 
-(provide 'ats2-flycheck)
+(provide 'flycheck-ats2)
 ;;; flycheck-ats2.el ends here
